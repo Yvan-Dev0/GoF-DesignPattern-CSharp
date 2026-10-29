@@ -27,6 +27,7 @@ The project is intentionally a teaching resource, not a production framework. Ex
 - [Command-Line Shortcuts](#command-line-shortcuts)
 - [A Suggested Four-Week Study Plan](#a-suggested-four-week-study-plan)
 - [How to Practice](#how-to-practice)
+- [Practice Problems](#practice-problems)
 - [Common Beginner Mistakes](#common-beginner-mistakes)
 - [Design Principles Behind the Patterns](#design-principles-behind-the-patterns)
 - [License and Use](#license-and-use)
@@ -347,6 +348,13 @@ Behavioral/
   StrategyPattern.cs
   TemplateMethodPattern.cs
   VisitorPattern.cs
+Exercises/
+  Core/          the exercise contract, checker, practice menu, catalog, and quiz
+  Problems/      23 practice problems: starter code you edit, plus their checks
+Solutions/
+  Creational/    reference solutions, one per problem, grouped by pattern family
+  Structural/
+  Behavioral/
 ```
 
 ### What each part does
@@ -359,6 +367,8 @@ Behavioral/
 - **`Creational/`** — the five patterns about object creation.
 - **`Structural/`** — the seven patterns about composition.
 - **`Behavioral/`** — the eleven patterns about communication and responsibility.
+- **`Exercises/`** — hands-on practice problems and the pattern-recognition quiz. See [Practice Problems](#practice-problems).
+- **`Solutions/`** — a reference solution for every practice problem.
 
 Each pattern file contains:
 
@@ -397,12 +407,14 @@ Open `GoFPatternGuide.csproj` and press Run. The project targets `net8.0` and us
 
 ## How the Interactive Course Works
 
-The main menu offers four learning paths:
+The main menu offers six learning paths:
 
 1. **Browse patterns by category** — choose Creational, Structural, or Behavioral, then pick a lesson.
 2. **View all 23 patterns at a glance** — see the complete catalog and open a pattern by number.
 3. **Open a pattern by number** — jump directly to a lesson.
 4. **About this guide and how to study** — a short study method and suggested learning order.
+5. **Practice problems** — apply the patterns yourself to realistic code. See [Practice Problems](#practice-problems).
+6. **Which pattern? quiz** — read short design situations and pick the pattern that fits.
 
 When you open a pattern, the app:
 
@@ -432,6 +444,21 @@ dotnet run -- --run Adapter
 
 # Run every demo without printing the explanations
 dotnet run -- --run-all
+
+# List the practice problems
+dotnet run -- --exercises
+
+# Show practice problem 3 and check your code (exit code 0 when everything passes)
+dotnet run -- --exercise 3
+
+# Show the reference solution for problem 3 and run its checks
+dotnet run -- --solution 3
+
+# Check every problem and every reference solution in one table
+dotnet run -- --check-all
+
+# Take the pattern-recognition quiz
+dotnet run -- --quiz
 
 # Show command-line help
 dotnet run -- --help
@@ -529,6 +556,44 @@ Look for these ideas in libraries you already use:
 ### 4. Explain it without jargon
 
 If you can explain a pattern to a friend using a non-programming analogy, you probably understand it. If you can only recite the definition, go back to the problem it solves.
+
+---
+
+## Practice Problems
+
+The lessons show finished designs. The practice problems ask you to make the design decision yourself.
+
+Every problem takes place in **HelpDesk Pro**, a small support-ticket system, so you can spend your attention on design instead of learning a new domain each time. Each problem gives you:
+
+- **The situation** — what the code does today and what the business wants next.
+- **Starter code** — it works for today's requirements, but has a design problem (a growing `switch`, copy-pasted steps, a class that knows too much, a shallow-copy bug, and so on) that makes the next requirement painful.
+- **Your task and acceptance criteria.**
+- **Hints**, revealed one at a time. The last two hints reveal the pattern family and then the pattern itself.
+- **Checks** that print `PASS`, `FAIL`, or `TODO` (not implemented yet) for each requirement.
+- **Self-review questions**, because checks can verify behavior but not design.
+
+The problems do **not** name their pattern, and they are not listed in lesson order. Recognizing which pattern fits is half of the skill.
+
+### How to work on a problem
+
+1. Run `dotnet run`, choose **5. Practice problems**, and pick one (or run `dotnet run -- --exercise 3`).
+2. Read the situation and the task, then open the starter file it names, for example `Exercises/Problems/SlaDeadlinesExercise.cs`.
+3. Change only the **STARTER CODE** section. The **CHECKS** section at the bottom is how the guide grades your work.
+4. Run the checks again until every line says `PASS`.
+5. Answer the self-review questions honestly.
+6. Compare with the reference solution (`dotnet run -- --solution 3`, or the files in `Solutions/`). It is one good answer, not the only one; read its *Gains*, *Costs*, and *Not the answer* notes.
+
+To start over, restore the starter file with `git checkout -- Exercises/Problems/<File>.cs`.
+
+### For instructors
+
+- `dotnet run -- --check-all` prints one row per problem with the learner's progress and confirms that every reference solution passes. It exits with a non-zero code if a reference solution is broken, so it also works as a quick self-test after editing the guide.
+- Each problem runs exactly the same checks against the starter code and the reference solution, so the acceptance criteria live in one place.
+- Problems and solutions are self-contained in their own namespaces, so learners can work on them in any order.
+
+### The recognition quiz
+
+Choose **6. Which pattern?** (or run `dotnet run -- --quiz`) for short situations where you pick the pattern that fits. Some questions are deliberate traps where the best answer is no pattern at all.
 
 ---
 
