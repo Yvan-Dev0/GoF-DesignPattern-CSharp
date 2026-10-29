@@ -1,5 +1,6 @@
 using System.Text;
 using GoFPatternGuide.Core;
+using GoFPatternGuide.Exercises.Core;
 
 namespace GoFPatternGuide;
 
@@ -42,10 +43,12 @@ internal static class Program
             ConsoleUi.Success("2. View all 23 patterns at a glance");
             ConsoleUi.Success("3. Open a pattern by number");
             ConsoleUi.Success("4. About this guide and how to study");
+            ConsoleUi.Success("5. Practice problems: apply the patterns yourself");
+            ConsoleUi.Success("6. Which pattern? A recognition quiz");
             ConsoleUi.Success("0. Exit");
             ConsoleUi.Rule();
 
-            var choice = ConsoleUi.ReadInt("Choose an option: ", 0, 4);
+            var choice = ConsoleUi.ReadInt("Choose an option: ", 0, 6);
 
             switch (choice)
             {
@@ -65,6 +68,12 @@ internal static class Program
                     break;
                 case 4:
                     ShowStudyGuide();
+                    break;
+                case 5:
+                    PracticeMenu.Browse();
+                    break;
+                case 6:
+                    PatternQuiz.Run();
                     break;
             }
         }
@@ -323,6 +332,21 @@ internal static class Program
 
                 return 0;
 
+            case "--exercises":
+                PracticeMenu.PrintList();
+                return 0;
+
+            case "--exercise":
+            case "--solution":
+                return RunExerciseFromCommandLine(command, args);
+
+            case "--check-all":
+                return PracticeMenu.CheckAll();
+
+            case "--quiz":
+                PatternQuiz.Run();
+                return 0;
+
             case "--help":
             case "-h":
             case "/?":
@@ -372,6 +396,28 @@ internal static class Program
         return 0;
     }
 
+    private static int RunExerciseFromCommandLine(string command, string[] args)
+    {
+        if (args.Length < 2 ||
+            !int.TryParse(args[1], out var number) ||
+            ExerciseCatalog.FindByNumber(number) is not { } entry)
+        {
+            ConsoleUi.Error($"The {command} command needs a problem number from 1 to {ExerciseCatalog.All.Count}.");
+            ConsoleUi.Info("Use --exercises to see every problem.");
+            return 1;
+        }
+
+        if (command == "--solution")
+        {
+            ConsoleUi.Header($"Problem {number}: {entry.Exercise.Title}");
+            PracticeMenu.ShowSolution(entry);
+            return 0;
+        }
+
+        PracticeMenu.PrintProblem(entry);
+        return PracticeMenu.RunExercise(entry) ? 0 : 1;
+    }
+
     private static void PrintCommandLineHelp()
     {
         Console.WriteLine("""
@@ -383,6 +429,11 @@ internal static class Program
               dotnet run -- --run 7         Show lesson 7 and run its demo
               dotnet run -- --run Adapter   Find a pattern by name
               dotnet run -- --run-all       Run every demo without the explanations
+              dotnet run -- --exercises     List the practice problems
+              dotnet run -- --exercise 3    Show practice problem 3 and check your code
+              dotnet run -- --solution 3    Show and check the reference solution for problem 3
+              dotnet run -- --check-all     Check every problem and every reference solution
+              dotnet run -- --quiz          Take the pattern-recognition quiz
               dotnet run -- --help          Show this help
             """);
     }
